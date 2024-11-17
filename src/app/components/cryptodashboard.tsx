@@ -12,16 +12,19 @@ type CoinLayerResponse = {
 export default function CoinMarket() {
   const API_KEY = "69248c7024deda1858b0f7b057565109";
   const [data, setData] = useState<CoinLayerResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
+    setLoading(true); // Set loading to true on refresh
     fetch(`https://api.coinlayer.com/live?access_key=${API_KEY}`)
       .then((response) => response.json())
       .then((jsonConverted: CoinLayerResponse) => {
         console.log("JSON Converted Data:", jsonConverted);
         setData(jsonConverted);
       })
-      .catch((error) => console.error("Error fetching data:", error));
+      .catch((error) => console.error("Error fetching data:", error))
+      .finally(() => setLoading(false)); // Stop loading after fetching data
   }, []);
 
   const filteredRates = Object.entries(data?.rates || {}).filter(([coin]) =>
@@ -46,7 +49,10 @@ export default function CoinMarket() {
         />
       </div>
 
-      {filteredRates.length > 0 ? (
+      {/* Loading or Content */}
+      {loading ? (
+        <p className="text-center">Loading cryptocurrencies...</p>
+      ) : filteredRates.length > 0 || searchQuery === "" ? (
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {filteredRates.map(([coin, price]) => (
             <div
