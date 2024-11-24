@@ -1,9 +1,13 @@
-import CryptoDashboard from "./components/cryptodashboard";
+import { LoginProvider } from "@/context/login/login";
+import HeaderSec from "@/components/HeaderSec";
+
 
 export default function Home() {
   return (
-   <>
-   <CryptoDashboard/>
-   </>
+    <>
+      <LoginProvider>
+        <HeaderSec />
+      </LoginProvider>
+    </>
   );
 }
